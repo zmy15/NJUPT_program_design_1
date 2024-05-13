@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #include <stdio.h>
+#include<Windows.h>
 #include"main.h"
 
 int main()
@@ -19,6 +20,7 @@ int main()
 	}
 	printf("\n");
 	scanf("%d",&n);
+	system("cls");
 	switch (n)
 	{
 	case 1:
@@ -37,5 +39,6 @@ int main()
 		return 0;
 		break;
 	}
+	fclose(fp);
 	return 0;
 }
