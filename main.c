@@ -12,7 +12,8 @@ int main()
 	if (fp == NULL)
 	{
 		printf("系统登录文件错误，系统退出!");
-		return 0;
+		fclose(fp);
+		return 1;
 	}
 	while (fgets(ui, sizeof(ui), fp) != NULL)
 	{
@@ -33,10 +34,10 @@ int main()
 		admin_login();
 		break;
 	case 4:
-		return 0;
+		return 1;
 		break;
 	default:
-		return 0;
+		return 1;
 		break;
 	}
 	fclose(fp);

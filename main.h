@@ -1,6 +1,11 @@
+#include "cJSON.h"
+
 void student_login();
 void student_sign_up();
 void admin_login();
+
+cJSON* readJSONFile(const char* filename);
+int writeJSONFile(const char* filename, cJSON* root);
 
 struct student
 {
