@@ -2,6 +2,8 @@
 #include"main.h"
 #include<stdio.h>
 #include"cJSON.h"
+#include"file.h"
+#include"student.h"
 #include<Windows.h>
 #include<string.h>
 
@@ -62,5 +64,7 @@ void student_login()
 	} while (!(strcmp(student_login.name,student[i].name)==0 && strcmp(student_login.password,student[i].password)==0 && strcmp(student_login.ID, student[i].ID)== 0));
 	printf("µÇÂ¼³É¹¦£¡");
 	cJSON_Delete(root);
+	system("cls");
+	student_interface();
 	return 0;
 }

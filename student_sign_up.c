@@ -2,6 +2,7 @@
 #include"main.h"
 #include<stdio.h>
 #include"cJSON.h"
+#include"file.h"
 #include<Windows.h>
 
 void student_sign_up()
