@@ -5,21 +5,8 @@
 
 int main()
 {
-	FILE* fp;
-	char ui[50];
 	int n;
-	fp = fopen("login_ui.txt", "r");
-	if (fp == NULL)
-	{
-		printf("系统登录文件错误，系统退出!");
-		fclose(fp);
-		return 1;
-	}
-	while (fgets(ui, sizeof(ui), fp) != NULL)
-	{
-		printf("%s", ui);
-	}
-	printf("\n");
+	ui("login_ui.txt");
 	scanf("%d",&n);
 	system("cls");
 	switch (n)
@@ -40,6 +27,5 @@ int main()
 		return 1;
 		break;
 	}
-	fclose(fp);
 	return 0;
 }

@@ -6,6 +6,7 @@ void admin_login();
 
 cJSON* readJSONFile(const char* filename);
 int writeJSONFile(const char* filename, cJSON* root);
+void ui(char* file);
 
 struct student
 {

@@ -3,30 +3,64 @@
 #include<stdio.h>
 #include"cJSON.h"
 #include<Windows.h>
+#include<string.h>
+
+#define MAX_STUDENT 100
 
 void student_login()
 {
-	FILE* stu, * fp;
-	int n;
-	char ui[50];
-	STU student;
-	fp = fopen("student_login_ui.txt", "r");
-	stu = fopen("student.json", "a+");
-	if ((stu == NULL) || (fp == NULL))
-	{
-		printf("学生信息文件错误，系统退出!");
-		return 0;
-	}
-	while (fgets(ui, sizeof(ui), fp) != NULL)
-	{
-		printf("%s", ui);
-	}
-	printf("\n");
+	int n, i = -1;
+	STU student_login;
+	STU student[MAX_STUDENT];
+	int num_student = 0;
+	ui("student_login_ui.txt");
 	printf("请输入姓名：");
-	scanf("%s", &student.name);
+	scanf("%s", &student_login.name);
 	printf("请输入密码：");
-	scanf("%s", &student.password);
+	scanf("%s", &student_login.password);
 	printf("请输入学号：");
-	scanf("%s", &student.ID);
+	scanf("%s", &student_login.ID);
+	cJSON* root = readJSONFile("student.json");
+	if (root == NULL) {
+		printf("Error reading JSON file!\n");
+		return 1;
+	}
+	cJSON* student_json = NULL;
+	cJSON_ArrayForEach(student_json, root) {
+		if (num_student >= MAX_STUDENT) {
+			printf("Maximum number of persons reached!\n");
+			break;
+		}
+
+		cJSON* name = cJSON_GetObjectItemCaseSensitive(student_json, "name");
+		cJSON* password = cJSON_GetObjectItemCaseSensitive(student_json, "password");
+		cJSON* ID = cJSON_GetObjectItemCaseSensitive(student_json, "ID");
+
+		if (!cJSON_IsString(name) || !cJSON_IsString(password) || !cJSON_IsString(ID)) {
+			printf("Invalid JSON format!\n");
+			continue;
+		}
+
+		strncpy(student[num_student].name, name->valuestring, sizeof(student[num_student].name));
+		strncpy(student[num_student].password, password->valuestring, sizeof(student[num_student].password));
+		strncpy(student[num_student].ID, ID->valuestring, sizeof(student[num_student].ID));
+
+		num_student++;
+	}
+	do
+	{
+		if (i <= num_student)
+		{
+			i++;
+		}
+		else
+		{
+			printf("账号或密码错误，登录失败！");
+			cJSON_Delete(root);
+			return 1;
+		}
+	} while (!(strcmp(student_login.name,student[i].name)==0 && strcmp(student_login.password,student[i].password)==0 && strcmp(student_login.ID, student[i].ID)== 0));
+	printf("登录成功！");
+	cJSON_Delete(root);
 	return 0;
 }

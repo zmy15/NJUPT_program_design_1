@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #include <stdio.h>
 #include <stdlib.h>
+#include"main.h"
 #include "cJSON.h"
 
 #define MAX_STUDENT 100
@@ -55,6 +56,24 @@ int writeJSONFile(const char* filename, cJSON* root) {
     return 0;
 }
 
+void ui(char *file)
+{
+    FILE* fp;
+    int n;
+    char ui[50];
+    fp = fopen(file, "r");
+    if (fp == NULL)
+    {
+        printf("学生信息文件错误，系统退出!");
+        return 0;
+    }
+    while (fgets(ui, sizeof(ui), fp) != NULL)
+    {
+        printf("%s", ui);
+    }
+    printf("\n");
+    fclose(fp);
+}
 /*int main() {
     // 读取已有的 JSON 文件内容
     cJSON* root = readJSONFile("persons.json");

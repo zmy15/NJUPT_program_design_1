@@ -6,22 +6,9 @@
 
 void student_sign_up()
 {
-	FILE* stu, * fp;
-	int n;
-	char ui[50];
 	STU student;
-	fp = fopen("student_sign_up_ui.txt", "r");
-	stu = fopen("student.json", "a+");
-	if ((stu == NULL)|| (fp == NULL))
-	{
-		printf("学生信息文件错误，系统退出!");
-		return 0;
-	}
-	while (fgets(ui, sizeof(ui), fp) != NULL)
-	{
-		printf("%s", ui);
-	}
-	printf("\n");
+	int n;
+	ui("student_sign_up_ui.txt");
 	printf("请输入姓名：");
 	scanf("%s", &student.name);
 	printf("请输入密码：");
@@ -52,8 +39,6 @@ void student_sign_up()
 	// 释放 cJSON 对象
 	cJSON_Delete(root);
 	printf("注册成功！按1返回登录界面\n");
-	fclose(fp);
-	fclose(stu);
 	scanf("%d", &n);
 	if (n == 1)
 	{
