@@ -16,25 +16,24 @@ void student_sign_up()//学生注册
 	Encrypted_input(&student_sign_up);
 	printf("请输入学号：");
 	scanf("%s", &student_sign_up.ID);
+	student_sign_up.basketball = 0;
+	student_sign_up.badminton = 0;
+	student_sign_up.pingpang = 0;
 	// 读取和写入已有的 JSON 文件内容
 	cJSON* root = readJSONFile("student_information.json");
 	if (root == NULL) {
 		printf("Error reading JSON file!\n");
 		return 1;
 	}
-	cJSON* student_add = cJSON_CreateObject();
-	cJSON_AddStringToObject(student_add, "name", student_sign_up.name);
-	cJSON_AddStringToObject(student_add, "password", student_sign_up.password);
-	cJSON_AddStringToObject(student_add, "ID", student_sign_up.ID);
-	cJSON_AddItemToArray(root, student_add);
+	addStudentToJSON(root, &student_sign_up);
 	if (writeJSONFile("student_information.json", root) != 0) {
 		printf("Error writing JSON file!\n");
 		cJSON_Delete(root);
 		return 1;
 	}
-	cJSON_Delete(root);
 	//输入为1返回登录界面，否则退出
 	printf("注册成功！按1返回登录界面\n");
+	cJSON_Delete(root);
 	scanf("%d", &n);
 	if (n == 1)
 	{

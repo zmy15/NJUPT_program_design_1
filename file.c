@@ -5,9 +5,9 @@
 #include "cJSON.h"
 #include"main.h"
 
-#define MAX_STUDENT 100
+#define MAX_STUDENTS 100
 
-// 读取 JSON 文件并返回 cJSON 对象
+//读取json文件
 cJSON* readJSONFile(const char* filename) {
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
@@ -34,7 +34,7 @@ cJSON* readJSONFile(const char* filename) {
     return root;
 }
 
-// 将 cJSON 对象写入 JSON 文件
+//写入json文件
 int writeJSONFile(const char* filename, cJSON* root) {
     char* json_str = cJSON_Print(root);
     if (json_str == NULL) {
@@ -55,6 +55,53 @@ int writeJSONFile(const char* filename, cJSON* root) {
     free(json_str);
 
     return 0;
+}
+
+//读取到结构体数组
+int parseJSONToStudents(cJSON* root, STU students[], int max_students) {
+    int num_students = 0;
+    cJSON* student_id = NULL;
+
+    cJSON_ArrayForEach(student_id, root) {
+        if (num_students >= max_students) {
+            printf("Maximum number of students reached!\n");
+            break;
+        }
+
+        cJSON* password = cJSON_GetObjectItemCaseSensitive(student_id, "password");
+        cJSON* name = cJSON_GetObjectItemCaseSensitive(student_id, "name");
+        cJSON* basketball = cJSON_GetObjectItemCaseSensitive(student_id, "basketball");
+        cJSON* badminton = cJSON_GetObjectItemCaseSensitive(student_id, "badminton");
+        cJSON* pingpang = cJSON_GetObjectItemCaseSensitive(student_id, "pingpang");
+
+        if (!cJSON_IsString(password) || !cJSON_IsString(name) || !cJSON_IsNumber(basketball) ||
+            !cJSON_IsNumber(badminton) || !cJSON_IsNumber(pingpang)) {
+            printf("Invalid JSON format for student ID: %s\n", student_id->string);
+            continue;
+        }
+
+        strncpy(students[num_students].ID, student_id->string, sizeof(students[num_students].ID));
+        strncpy(students[num_students].password, password->valuestring, sizeof(students[num_students].password));
+        strncpy(students[num_students].name, name->valuestring, sizeof(students[num_students].name));
+        students[num_students].basketball = basketball->valueint;
+        students[num_students].badminton = badminton->valueint;
+        students[num_students].pingpang = pingpang->valueint;
+
+        num_students++;
+    }
+
+    return num_students;
+}
+
+//添加学生信息
+void addStudentToJSON(cJSON* root, const STU* student) {
+    cJSON* info = cJSON_CreateObject();
+    cJSON_AddStringToObject(info, "password", student->password);
+    cJSON_AddStringToObject(info, "name", student->name);
+    cJSON_AddNumberToObject(info, "basketball", student->basketball);
+    cJSON_AddNumberToObject(info, "badminton", student->badminton);
+    cJSON_AddNumberToObject(info, "pingpang", student->pingpang);
+    cJSON_AddItemToObject(root, student->ID, info);
 }
 
 //绘制UI界面

@@ -7,14 +7,14 @@
 #include<Windows.h>
 #include<string.h>
 
-#define MAX_STUDENT 100
+#define MAX_STUDENTS 100
 
 void student_login()  //学生登录
 {
 	int n, i = -1;
 	STU student_login;
-	STU student[MAX_STUDENT];
-	int num_student = 0;
+	STU student[MAX_STUDENTS];
+	int num_student;
 	ui("student_login_ui.txt");  //UI界面
 	printf("请输入姓名：");
 	//学生输入信息
@@ -22,51 +22,27 @@ void student_login()  //学生登录
 	Encrypted_input(&student_login);
 	printf("请输入学号：");
 	scanf("%s", &student_login.ID);
+
 	//加载文件信息到结构体数组
 	cJSON* root = readJSONFile("student_information.json");
-	if (root == NULL) {
-		printf("Error reading JSON file!\n");
-		return 1;
-	}
-	cJSON* student_json = NULL;
-	cJSON_ArrayForEach(student_json, root) {
-		if (num_student >= MAX_STUDENT) {
-			printf("Maximum number of persons reached!\n");
-			break;
-		}
-
-		cJSON* name = cJSON_GetObjectItemCaseSensitive(student_json, "name");
-		cJSON* password = cJSON_GetObjectItemCaseSensitive(student_json, "password");
-		cJSON* ID = cJSON_GetObjectItemCaseSensitive(student_json, "ID");
-
-		if (!cJSON_IsString(name) || !cJSON_IsString(password) || !cJSON_IsString(ID)) {
-			printf("Invalid JSON format!\n");
-			continue;
-		}
-
-		strncpy(student[num_student].name, name->valuestring, sizeof(student[num_student].name));
-		strncpy(student[num_student].password, password->valuestring, sizeof(student[num_student].password));
-		strncpy(student[num_student].ID, ID->valuestring, sizeof(student[num_student].ID));
-
-		num_student++;
+	if (root != NULL) {
+		num_student = parseJSONToStudents(root, student, MAX_STUDENTS);
+		cJSON_Delete(root);
 	}
 	//判断账号密码是否正确
 	do
 	{
-		if (i <= num_student)
+		if (i < num_student)
 		{
 			i++;
 		}
 		else
 		{
 			printf("账号或密码错误，登录失败！");
-			cJSON_Delete(root);
 			return 1;
 		}
 	} while (!(strcmp(student_login.name,student[i].name)==0 && strcmp(student_login.password,student[i].password)==0 && strcmp(student_login.ID, student[i].ID)== 0));
 	printf("登录成功！");
-
-	cJSON_Delete(root);
 	system("cls");
 	student_interface();    //登录成功跳转到学生界面
 	return 0;

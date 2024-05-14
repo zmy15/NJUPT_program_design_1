@@ -4,9 +4,12 @@ void admin_login();
 
 struct student
 {
-	char  name[10];		//ĞÕÃû
-	char  password[10];	//ÃÜÂë
-	char  ID[5];		//Ñ§ºÅ
+    char ID[5];
+    char password[10];
+    char name[10];
+    int basketball;
+    int badminton;
+    int pingpang;
 };
 
 struct admin

@@ -1,22 +1,16 @@
 {
-	"":	{
-		"name":	"13",
-		"password":	"323",
-		"ID":	"33"
+	"0419":	{
+		"password":	"qqq",
+		"name":	"zmy",
+		"basketball":	0,
+		"badminton":	0,
+		"pingpang":	0
 	},
-	"":	{
-		"name":	"13",
-		"password":	"24",
-		"ID":	"5"
-	},
-	"":	{
-		"name":	"114514",
-		"password":	"homo",
-		"ID":	"666"
-	},
-	"":	{
-		"name":	"11",
-		"password":	"33",
-		"ID":	"4444"
+	"0211":	{
+		"password":	"xnn",
+		"name":	"zwr",
+		"basketball":	0,
+		"badminton":	0,
+		"pingpang":	0
 	}
 }
