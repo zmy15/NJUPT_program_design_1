@@ -17,6 +17,7 @@ void student_sign_up()//学生注册
 	student_sign_up.basketball = 0;
 	student_sign_up.badminton = 0;
 	student_sign_up.pingpang = 0;
+	student_sign_up.tennis = 0;
 	// 读取和写入已有的 JSON 文件内容
 	cJSON* root = readJSONFile("student_information.json");
 	if (root == NULL) {

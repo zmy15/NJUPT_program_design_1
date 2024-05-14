@@ -11,8 +11,9 @@
 cJSON* readJSONFile(const char* filename) {
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
-        printf("Error opening file!\n");
-        return NULL;
+        cJSON* root = cJSON_CreateObject();
+        writeJSONFile(filename, root);
+        return root;
     }
 
     fseek(file, 0, SEEK_END);
@@ -33,6 +34,7 @@ cJSON* readJSONFile(const char* filename) {
 
     return root;
 }
+
 
 //写入json文件
 int writeJSONFile(const char* filename, cJSON* root) {
@@ -73,9 +75,10 @@ int parseJSONToStudents(cJSON* root, STU students[], int max_students) {
         cJSON* basketball = cJSON_GetObjectItemCaseSensitive(student_id, "basketball");
         cJSON* badminton = cJSON_GetObjectItemCaseSensitive(student_id, "badminton");
         cJSON* pingpang = cJSON_GetObjectItemCaseSensitive(student_id, "pingpang");
+        cJSON* tennis = cJSON_GetObjectItemCaseSensitive(student_id, "tennis");
 
         if (!cJSON_IsString(password) || !cJSON_IsString(name) || !cJSON_IsNumber(basketball) ||
-            !cJSON_IsNumber(badminton) || !cJSON_IsNumber(pingpang)) {
+            !cJSON_IsNumber(badminton) || !cJSON_IsNumber(pingpang) || !cJSON_IsNumber(tennis)) {
             printf("Invalid JSON format for student ID: %s\n", student_id->string);
             continue;
         }
@@ -86,6 +89,7 @@ int parseJSONToStudents(cJSON* root, STU students[], int max_students) {
         students[num_students].basketball = basketball->valueint;
         students[num_students].badminton = badminton->valueint;
         students[num_students].pingpang = pingpang->valueint;
+        students[num_students].tennis = tennis->valueint;
 
         num_students++;
     }
@@ -101,6 +105,7 @@ void addStudentToJSON(cJSON* root, const STU* student) {
     cJSON_AddNumberToObject(info, "basketball", student->basketball);
     cJSON_AddNumberToObject(info, "badminton", student->badminton);
     cJSON_AddNumberToObject(info, "pingpang", student->pingpang);
+    cJSON_AddNumberToObject(info, "tennis", student->tennis);
     cJSON_AddItemToObject(root, student->ID, info);
 }
 
@@ -168,4 +173,88 @@ void Encrypted_input_ADMIN(ADMIN* admin)
         }
     }
     printf("\n");
+}
+
+
+char* read_file(const char* filename) {
+    FILE* file = fopen(filename, "rb");
+    if (file == NULL) {
+        printf("无法打开文件\n");
+        return NULL;
+    }
+
+    fseek(file, 0, SEEK_END);
+    long length = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    char* content = (char*)malloc(length + 1);
+    if (content) {
+        fread(content, 1, length, file);
+        content[length] = '\0';
+    }
+
+    fclose(file);
+    return content;
+}
+
+// 写入字符串内容到文件
+void write_file(const char* filename, const char* content) {
+    FILE* file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("无法打开文件\n");
+        return;
+    }
+
+    fprintf(file, "%s", content);
+    fclose(file);
+}
+
+// 状态转换为文字
+const char* status_to_string(int status) {
+    switch (status) {
+    case 0: return "空闲";
+    case 1: return "占用";
+    case 2: return "故障";
+    default: return "未知";
+    }
+}
+
+// 显示场地信息
+void display_facilities(cJSON* root, const char* facility_name) {
+    cJSON* facility_array = cJSON_GetObjectItem(root, facility_name);
+    if (facility_array) {
+        printf("%s:\n", facility_name);
+        int count = cJSON_GetArraySize(facility_array);
+        for (int i = 0; i < count; i++) {
+            cJSON* court = cJSON_GetArrayItem(facility_array, i);
+            int id = cJSON_GetObjectItem(court, "场地编号")->valueint;
+            int status = cJSON_GetObjectItem(court, "状态")->valueint;
+            printf("  场地编号: %d, 状态: %s\n", id, status_to_string(status));
+        }
+    }
+    else {
+        printf("未找到场地类型 %s\n", facility_name);
+    }
+}
+
+// 更改场地状态
+void change_status(cJSON* root, const char* facility_name, int court_id, int new_status) {
+    cJSON* facility_array = cJSON_GetObjectItem(root, facility_name);
+    if (facility_array) {
+        int count = cJSON_GetArraySize(facility_array);
+        for (int i = 0; i < count; i++) {
+            cJSON* court = cJSON_GetArrayItem(facility_array, i);
+            int id = cJSON_GetObjectItem(court, "场地编号")->valueint;
+            if (id == court_id) {
+                cJSON* status_item = cJSON_GetObjectItem(court, "状态");
+                status_item->valueint = new_status;
+                printf("%s %d 的状态已更改为 %s\n", facility_name, court_id, status_to_string(new_status));
+                return;
+            }
+        }
+        printf("未找到 %s 编号为 %d 的场地\n", facility_name, court_id);
+    }
+    else {
+        printf("未找到场地类型 %s\n", facility_name);
+    }
 }
