@@ -9,20 +9,21 @@
 
 #define MAX_STUDENT 100
 
-void student_login()
+void student_login()  //学生登录
 {
 	int n, i = -1;
 	STU student_login;
 	STU student[MAX_STUDENT];
 	int num_student = 0;
-	ui("student_login_ui.txt");
+	ui("student_login_ui.txt");  //UI界面
 	printf("请输入姓名：");
+	//学生输入信息
 	scanf("%s", &student_login.name);
-	printf("请输入密码：");
-	scanf("%s", &student_login.password);
+	Encrypted_input(&student_login);
 	printf("请输入学号：");
 	scanf("%s", &student_login.ID);
-	cJSON* root = readJSONFile("student.json");
+	//加载文件信息到结构体数组
+	cJSON* root = readJSONFile("student_information.json");
 	if (root == NULL) {
 		printf("Error reading JSON file!\n");
 		return 1;
@@ -49,6 +50,7 @@ void student_login()
 
 		num_student++;
 	}
+	//判断账号密码是否正确
 	do
 	{
 		if (i <= num_student)
@@ -63,8 +65,9 @@ void student_login()
 		}
 	} while (!(strcmp(student_login.name,student[i].name)==0 && strcmp(student_login.password,student[i].password)==0 && strcmp(student_login.ID, student[i].ID)== 0));
 	printf("登录成功！");
+
 	cJSON_Delete(root);
 	system("cls");
-	student_interface();
+	student_interface();    //登录成功跳转到学生界面
 	return 0;
 }

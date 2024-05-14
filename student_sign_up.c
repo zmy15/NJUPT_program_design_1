@@ -5,40 +5,35 @@
 #include"file.h"
 #include<Windows.h>
 
-void student_sign_up()
+void student_sign_up()//学生注册
 {
-	STU student;
+	STU student_sign_up;
 	int n;
-	ui("student_sign_up_ui.txt");
+	ui("student_sign_up_ui.txt");//绘制UI界面
+	//获取用户输入
 	printf("请输入姓名：");
-	scanf("%s", &student.name);
-	printf("请输入密码：");
-	scanf("%s", &student.password);
+	scanf("%s", &student_sign_up.name);
+	Encrypted_input(&student_sign_up);
 	printf("请输入学号：");
-	scanf("%s", &student.ID);
-	// 读取已有的 JSON 文件内容
-	cJSON* root = readJSONFile("student.json");
+	scanf("%s", &student_sign_up.ID);
+	// 读取和写入已有的 JSON 文件内容
+	cJSON* root = readJSONFile("student_information.json");
 	if (root == NULL) {
 		printf("Error reading JSON file!\n");
 		return 1;
 	}
-
-	// 添加新的数据到 cJSON 数组对象中
 	cJSON* student_add = cJSON_CreateObject();
-	cJSON_AddStringToObject(student_add, "name", student.name);
-	cJSON_AddStringToObject(student_add, "password", student.password);
-	cJSON_AddStringToObject(student_add, "ID", student.ID);
+	cJSON_AddStringToObject(student_add, "name", student_sign_up.name);
+	cJSON_AddStringToObject(student_add, "password", student_sign_up.password);
+	cJSON_AddStringToObject(student_add, "ID", student_sign_up.ID);
 	cJSON_AddItemToArray(root, student_add);
-
-	// 将更新后的 cJSON 对象写入 JSON 文件
-	if (writeJSONFile("student.json", root) != 0) {
+	if (writeJSONFile("student_information.json", root) != 0) {
 		printf("Error writing JSON file!\n");
 		cJSON_Delete(root);
 		return 1;
 	}
-
-	// 释放 cJSON 对象
 	cJSON_Delete(root);
+	//输入为1返回登录界面，否则退出
 	printf("注册成功！按1返回登录界面\n");
 	scanf("%d", &n);
 	if (n == 1)

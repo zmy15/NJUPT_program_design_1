@@ -1,7 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #include <stdio.h>
 #include <stdlib.h>
+#include <conio.h>
 #include "cJSON.h"
+#include"main.h"
 
 #define MAX_STUDENT 100
 
@@ -55,16 +57,16 @@ int writeJSONFile(const char* filename, cJSON* root) {
     return 0;
 }
 
+//绘制UI界面
 void ui(char *file)
 {
     FILE* fp;
-    int n;
     char ui[50];
     fp = fopen(file, "r");
     if (fp == NULL)
     {
         printf("学生信息文件错误，系统退出!");
-        return 0;
+        return 1;
     }
     while (fgets(ui, sizeof(ui), fp) != NULL)
     {
@@ -72,4 +74,28 @@ void ui(char *file)
     }
     printf("\n");
     fclose(fp);
+}
+
+//密码密文输入
+void Encrypted_input(STU *student)
+{
+    char ch;
+    int i = 0;
+    printf("请输入密码：");
+    while (1) {
+        ch = _getch();
+        if (ch == '\r') {
+            student->password[i] = '\0'; // 在输入完毕后，将密码字符串的末尾置为'\0'
+            break;
+        }
+        else if (ch == '\b' && i > 0) {
+            printf("\b \b"); // 如果是退格键，删除上一个字符，并将光标位置移回一个位置
+            i--;
+        }
+        else {
+            printf("*"); // 打印*字符来代替实际输入内容
+            student->password[i++] = ch; // 将输入的字符保存到密码字符串中
+        }
+    }
+    printf("\n");
 }
