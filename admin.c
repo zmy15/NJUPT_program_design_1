@@ -1,13 +1,34 @@
 #define _CRT_SECURE_NO_WARNINGS 1
-#include"main.h"
 #include<stdio.h>
-#include"cJSON.h"
-#include"file.h"
 #include<Windows.h>
-#include<string.h>
+#include"file.h"
+#include"admin.h"
 
-void admin_interface()         //用户界面
+void admin_interface()         //管理员界面
 {
 	ui("admin_ui.txt");
-
+	int n;
+	scanf("%d", &n);
+	system("cls");
+	//选择功能
+	switch (n)
+	{
+	case 1:
+		site_maintenance();//场地维护
+		break;
+	case 2:
+		site_info();//场地使用情况
+		break;
+	case 3:
+		stu_order_info();//预约学生信息
+		break;
+	case 4:
+		site_statistics_info();//信息统计
+		break;
+	case 5:
+		return 0;
+		break;
+	default:
+		return 0;
+	}
 }

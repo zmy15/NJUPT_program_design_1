@@ -1,7 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS 1
-#include"main.h"
 #include<stdio.h>
-#include"cJSON.h"
 #include"file.h"
 #include"student.h"
 #include<Windows.h>
@@ -19,7 +17,7 @@ void student_login()  //学生登录
 	printf("请输入姓名：");
 	//学生输入信息
 	scanf("%s", &student_login.name);
-	Encrypted_input(&student_login);
+	Encrypted_input_STU(&student_login);
 	printf("请输入学号：");
 	scanf("%s", &student_login.ID);
 

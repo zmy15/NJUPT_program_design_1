@@ -4,10 +4,10 @@ void admin_login();
 
 struct student
 {
-    char ID[5];
-    char password[10];
-    char name[10];
-    int basketball;
+    char ID[5];         //学号
+    char password[10];  //密码
+    char name[10];      //姓名
+    int basketball;     //预约情况，0为未预约，数字代表场地号
     int badminton;
     int pingpang;
 };

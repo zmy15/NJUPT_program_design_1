@@ -124,7 +124,7 @@ void ui(char *file)
 }
 
 //密码密文输入
-void Encrypted_input(STU *student)
+void Encrypted_input_STU(STU *student)
 {
     char ch;
     int i = 0;
@@ -142,6 +142,29 @@ void Encrypted_input(STU *student)
         else {
             printf("*"); // 打印*字符来代替实际输入内容
             student->password[i++] = ch; // 将输入的字符保存到密码字符串中
+        }
+    }
+    printf("\n");
+}
+
+void Encrypted_input_ADMIN(ADMIN* admin)
+{
+    char ch;
+    int i = 0;
+    printf("请输入密码：");
+    while (1) {
+        ch = _getch();
+        if (ch == '\r') {
+            admin->password[i] = '\0'; // 在输入完毕后，将密码字符串的末尾置为'\0'
+            break;
+        }
+        else if (ch == '\b' && i > 0) {
+            printf("\b \b"); // 如果是退格键，删除上一个字符，并将光标位置移回一个位置
+            i--;
+        }
+        else {
+            printf("*"); // 打印*字符来代替实际输入内容
+            admin->password[i++] = ch; // 将输入的字符保存到密码字符串中
         }
     }
     printf("\n");

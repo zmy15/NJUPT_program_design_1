@@ -1,5 +1,4 @@
 #define _CRT_SECURE_NO_WARNINGS 1
-#include"main.h"
 #include"file.h"
 #include"admin.h"
 #include<string.h>
@@ -13,7 +12,7 @@ void admin_login()//管理员登录
 	//获取用户输入
 	printf("请输入姓名：");
 	scanf("%s", &admin_login.name);
-	Encrypted_input(&admin_login);
+	Encrypted_input_ADMIN(&admin_login);
 	printf("请输入工号：");
 	scanf("%s", &admin_login.ID);
 	//进行登录
