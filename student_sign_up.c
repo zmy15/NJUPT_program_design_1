@@ -37,7 +37,7 @@ void student_sign_up()//бЇЩњзЂВс
 	if (n == 1)
 	{
 		system("cls");
-		student_login();
+		_student_login();
 	}
 	else 
 	{

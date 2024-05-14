@@ -13,7 +13,7 @@ int main()
 	switch (n)
 	{
 	case 1:
-		student_login();//学生登录
+		_student_login();//学生登录
 		break;
 	case 2:
 		student_sign_up();//学生注册

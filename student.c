@@ -6,11 +6,10 @@
 
 void student_interface()         //用户界面
 {
-	ui("admin_ui.txt");
+	ui("student_ui.txt");
 	int n;
 	scanf("%d", &n);
 	system("cls");
-	/*
 	//选择功能
 	switch (n)
 	{
@@ -28,5 +27,5 @@ void student_interface()         //用户界面
 		break;
 	default:
 		return 0;
-	}*/
+	}
 }

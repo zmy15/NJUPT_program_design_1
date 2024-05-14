@@ -1,4 +1,4 @@
-void student_login();
+void _student_login();
 void student_sign_up();
 void admin_login();
 
@@ -21,14 +21,18 @@ struct admin
 };
 
 typedef struct {
-    int student_id;
-    int facility_id;
-    int year;
-    int month;
-    int day;
-    int start_hour;
-    int end_hour;
+    char ID[5];           // 学号
+    int site_id;          // 场地类型编号，0:羽毛球场，1：网球场，2：篮球场，3:乒乓球场
+    int facility_id;      // 场地编号
+    int year;             // 预约年份
+    int month;            // 预约月份
+    int day;              // 预约日期
+    int start_hour;       // 开始小时
+    int end_hour;         // 结束小时
 } Reservation;
+
 
 typedef struct student STU;
 typedef struct admin ADMIN;
+
+extern STU student_login;
