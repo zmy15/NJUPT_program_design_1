@@ -2,10 +2,10 @@
 	"111":	{
 		"password":	"123",
 		"name":	"zmy",
-		"basketball":	0,
+		"basketball":	6,
 		"badminton":	0,
 		"pingpang":	0,
-		"tennis":	1
+		"tennis":	3
 	},
 	"1111":	{
 		"password":	"111",

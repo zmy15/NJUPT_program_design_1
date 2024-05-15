@@ -7,11 +7,11 @@
 
 #define MAX_STUDENTS 100
 
+STU student_login;
 void _student_login()  //学生登录
 {
 	int n, i = -1;
 	STU student[MAX_STUDENTS];
-	STU student_login;
 	int num_student;
 	ui("student_login_ui.txt");  //UI界面
 	printf("请输入姓名：");
@@ -41,7 +41,6 @@ void _student_login()  //学生登录
 		}
 	} while (!(strcmp(student_login.name,student[i].name)==0 && strcmp(student_login.password,student[i].password)==0 && strcmp(student_login.ID, student[i].ID)== 0));
 	printf("登录成功！");
-	copy_ID(&student_login.ID);
 	system("cls");
 	student_interface();    //登录成功跳转到学生界面
 	return 0;

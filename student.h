@@ -1,2 +1,4 @@
 void student_interface();
-void copy_ID(char* ID);
+void student_order();
+void report_error(); 
+void student_site_info();

@@ -29,8 +29,8 @@ typedef struct {
     int day;              // 预约日期
     int start_hour;       // 开始小时
     int end_hour;         // 结束小时
+    double fee;           // 费用
 } Reservation;
-
 
 typedef struct student STU;
 typedef struct admin ADMIN;

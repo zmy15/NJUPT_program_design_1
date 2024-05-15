@@ -12,3 +12,5 @@ void Encrypted_input_ADMIN(ADMIN* admin);
 
 char* read_file(const char* filename);
 void write_file(const char* filename, const char* content);
+
+void print_daily_schedule(cJSON* site_json, int year, int month, int day);
