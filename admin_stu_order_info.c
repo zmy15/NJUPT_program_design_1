@@ -42,6 +42,8 @@ void stu_order_info ()
                     int year = cJSON_GetObjectItem(reservation_json, "year")->valueint;
                     int month = cJSON_GetObjectItem(reservation_json, "month")->valueint;
                     int day = cJSON_GetObjectItem(reservation_json, "day")->valueint;
+                    int start_hour = cJSON_GetObjectItem(reservation_json, "start_hour")->valueint;
+                    int end_hour = cJSON_GetObjectItem(reservation_json, "end_hour")->valueint;
                     int facility_id = cJSON_GetObjectItem(reservation_json, "facility_id")->valueint;
                     const char* facility_type;
                     switch (cJSON_GetObjectItem(reservation_json, "site_id")->valueint) {
@@ -61,7 +63,7 @@ void stu_order_info ()
                         facility_type = "δ֪";
                         break;
                     }
-                    printf("%d-%02d-%02d, %s%d\n", year, month, day, facility_type, facility_id);
+                    printf("%d-%02d-%02d %d:00-%d:00, %s%d\n", year, month, day, start_hour, end_hour, facility_type, facility_id);
                 }
             }
             else {

@@ -3,15 +3,7 @@
 		"password":	"123",
 		"name":	"zmy",
 		"basketball":	0,
-		"badminton":	0,
-		"pingpang":	10,
-		"tennis":	1
-	},
-	"1111":	{
-		"password":	"111",
-		"name":	"111",
-		"basketball":	0,
-		"badminton":	0,
+		"badminton":	1,
 		"pingpang":	0,
 		"tennis":	0
 	}

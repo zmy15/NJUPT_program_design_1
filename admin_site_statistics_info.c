@@ -4,7 +4,7 @@
 #include"file.h"
 #include"admin.h"
 
-extern double fee_rates[]; // 各种场地的收费标准
+double fee_rates[4] = {5,8,10,15}; // 各种场地的收费标准
 void count_daily_usage(int year, int month, int day) {
     // 读取 student_order.json 文件
     char* order_data = read_file("student_order.json");

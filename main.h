@@ -1,16 +1,14 @@
 void _student_login();
 void student_sign_up();
 void admin_login();
+void student_l_s();
+void update_site_info();
 
 struct student
 {
     char ID[5];         //学号
     char password[10];  //密码
     char name[10];      //姓名
-    int basketball;     //预约情况，0为未预约，数字代表场地号
-    int badminton;
-    int tennis;
-    int pingpang;
 };
 
 struct admin

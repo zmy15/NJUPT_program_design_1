@@ -72,13 +72,8 @@ int parseJSONToStudents(cJSON* root, STU students[], int max_students) {
 
         cJSON* password = cJSON_GetObjectItemCaseSensitive(student_id, "password");
         cJSON* name = cJSON_GetObjectItemCaseSensitive(student_id, "name");
-        cJSON* basketball = cJSON_GetObjectItemCaseSensitive(student_id, "basketball");
-        cJSON* badminton = cJSON_GetObjectItemCaseSensitive(student_id, "badminton");
-        cJSON* pingpang = cJSON_GetObjectItemCaseSensitive(student_id, "pingpang");
-        cJSON* tennis = cJSON_GetObjectItemCaseSensitive(student_id, "tennis");
 
-        if (!cJSON_IsString(password) || !cJSON_IsString(name) || !cJSON_IsNumber(basketball) ||
-            !cJSON_IsNumber(badminton) || !cJSON_IsNumber(pingpang) || !cJSON_IsNumber(tennis)) {
+        if (!cJSON_IsString(password) || !cJSON_IsString(name) ) {
             printf("Invalid JSON format for student ID: %s\n", student_id->string);
             continue;
         }
@@ -86,10 +81,6 @@ int parseJSONToStudents(cJSON* root, STU students[], int max_students) {
         strncpy(students[num_students].ID, student_id->string, sizeof(students[num_students].ID));
         strncpy(students[num_students].password, password->valuestring, sizeof(students[num_students].password));
         strncpy(students[num_students].name, name->valuestring, sizeof(students[num_students].name));
-        students[num_students].basketball = basketball->valueint;
-        students[num_students].badminton = badminton->valueint;
-        students[num_students].pingpang = pingpang->valueint;
-        students[num_students].tennis = tennis->valueint;
 
         num_students++;
     }
@@ -102,10 +93,6 @@ void addStudentToJSON(cJSON* root, const STU* student) {
     cJSON* info = cJSON_CreateObject();
     cJSON_AddStringToObject(info, "password", student->password);
     cJSON_AddStringToObject(info, "name", student->name);
-    cJSON_AddNumberToObject(info, "basketball", student->basketball);
-    cJSON_AddNumberToObject(info, "badminton", student->badminton);
-    cJSON_AddNumberToObject(info, "pingpang", student->pingpang);
-    cJSON_AddNumberToObject(info, "tennis", student->tennis);
     cJSON_AddItemToObject(root, student->ID, info);
 }
 
@@ -209,3 +196,50 @@ void write_file(const char* filename, const char* content) {
     fclose(file);
 }
 
+void generate_student_files() {
+    FILE* file;
+
+    // 检查 student_information.json 文件是否存在，不存在则生成
+    if ((file = fopen("student_information.json", "r")) == NULL) {
+        printf("警告：student_information.json 文件不存在，将自动生成。\n");
+        file = fopen("student_information.json", "w");
+        if (file) {
+            fputs("{}", file);
+            fclose(file);
+        }
+        else {
+            printf("无法生成 student_information.json 文件，请检查权限或磁盘空间。\n");
+            exit(1);
+        }
+    }
+    else {
+        fclose(file);
+    }
+
+    // 检查 student_order.json 文件是否存在，不存在则生成
+    if ((file = fopen("student_order.json", "r")) == NULL) {
+        printf("警告：student_order.json 文件不存在，将自动生成。\n");
+        file = fopen("student_order.json", "w");
+        if (file) {
+            fputs("{}", file);
+            fclose(file);
+        }
+        else {
+            printf("无法生成 student_order.json 文件，请检查权限或磁盘空间。\n");
+            exit(1);
+        }
+    }
+    else {
+        fclose(file);
+    }
+}
+
+int file_exists(const char* filename) 
+{
+    FILE* file;
+    if ((file = fopen(filename, "r")) == NULL) {
+        return 0;
+    }
+    fclose(file);
+    return 1;
+}

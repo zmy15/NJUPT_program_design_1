@@ -4,6 +4,23 @@
 #include"file.h"
 #include<Windows.h>
 
+void mark_facilities_as_faulty(cJSON* site_json, int site_id, int facility_id) {
+    cJSON* date_key;
+    cJSON_ArrayForEach(date_key, site_json) {
+        cJSON* time_key;
+        cJSON_ArrayForEach(time_key, date_key) {
+            cJSON* facility = cJSON_GetObjectItem(time_key, "badminton"); // 获取指定场地类型的数组
+            if (!facility) {
+                printf("Error: Unable to retrieve facility information.\n");
+                continue;
+            }
+
+            cJSON_SetNumberValue(cJSON_GetArrayItem(facility, facility_id), 2); // 设置场地状态为故障
+        }
+    }
+}
+
+
 void report_error() {
 
     int site_id;
@@ -23,7 +40,7 @@ void report_error() {
     free(site_data);
 
     // 更新 site_info.json 中的场地状态为 2（需要维修）
-    update_site_status(site_json, site_id, facility_id, 2);
+    mark_facilities_as_faulty(site_json, site_id, facility_id);
 
     // 将更新后的 site_info.json 写入文件
     char* site_data_updated = cJSON_Print(site_json);

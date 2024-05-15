@@ -6,18 +6,13 @@
 void student_sign_up()//学生注册
 {
 	STU student_sign_up;
-	int n;
-	ui("student_sign_up_ui.txt");//绘制UI界面
 	//获取用户输入
+	printf("学生注册\n");
 	printf("请输入姓名：");
 	scanf("%s", &student_sign_up.name);
 	Encrypted_input_STU(&student_sign_up);
 	printf("请输入学号：");
 	scanf("%s", &student_sign_up.ID);
-	student_sign_up.basketball = 0;
-	student_sign_up.badminton = 0;
-	student_sign_up.pingpang = 0;
-	student_sign_up.tennis = 0;
 	// 读取和写入已有的 JSON 文件内容
 	cJSON* root = readJSONFile("student_information.json");
 	if (root == NULL) {
@@ -33,13 +28,14 @@ void student_sign_up()//学生注册
 	//输入为1返回登录界面，否则退出
 	printf("注册成功！按1返回登录界面\n");
 	cJSON_Delete(root);
-	scanf("%d", &n);
-	if (n == 1)
+	int i;
+	scanf("%d", &i);
+	if (i == 1)
 	{
 		system("cls");
 		_student_login();
 	}
-	else 
+	else
 	{
 		return 0;
 	}

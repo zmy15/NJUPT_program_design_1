@@ -3,131 +3,139 @@
 #include<Windows.h>
 #include"file.h"
 #include"admin.h"
+#include"student.h"
 
-// 状态转换为文字
-const char* status_to_string(int status) {
-    switch (status) {
-    case 0: return "空闲";
-    case 1: return "占用";
-    case 2: return "故障";
-    default: return "未知";
+void print_facilities(cJSON* site_json, int year, int month, int day, int site_id, int start_hour, int end_hour) {
+    const char* site_type;
+    char* site_str;
+    switch (site_id) {
+    case 0:
+        site_type = "badminton";
+        site_str = "羽毛球场";
+        break;
+    case 1:
+        site_type = "tennis";
+        site_str = "网球场";
+        break;
+    case 2:
+        site_type = "basketball";
+        site_str = "篮球场";
+        break;
+    case 3:
+        site_type = "pingpang";
+        site_str = "乒乓球场";
+        break;
+    default:
+        return;
     }
-}
 
-// 显示场地信息
-void display_facilities(cJSON* root, const char* facility_name) {
-    cJSON* facility_array = cJSON_GetObjectItem(root, facility_name);
-    if (facility_array) {
-        printf("%s:\n", facility_name);
-        int count = cJSON_GetArraySize(facility_array);
-        for (int i = 0; i < count; i++) {
-            cJSON* court = cJSON_GetArrayItem(facility_array, i);
-            int id = cJSON_GetObjectItem(court, "facility_id")->valueint;
-            int status = cJSON_GetObjectItem(court, "status")->valueint;
-            printf("  场地编号: %d, 状态: %s\n", id, status_to_string(status));
+    char date_key[20];
+    sprintf(date_key, "%d-%02d-%02d", year, month, day);
+    cJSON* date_obj = cJSON_GetObjectItem(site_json, date_key);
+    if (!date_obj) {
+        printf("Error: No information available for the specified date.\n");
+        return;
+    }
+
+    char time_key[10];
+    sprintf(time_key, "%02d-%02d", start_hour, end_hour);
+    cJSON* time_obj = cJSON_GetObjectItem(date_obj, time_key);
+    if (!time_obj) {
+        printf("Error: No information available for the specified time slot.\n");
+        return;
+    }
+    cJSON* facility_obj = cJSON_GetObjectItem(time_obj, site_type);
+
+    printf("从 %d 时到 %d 时的空闲 %s:", start_hour, end_hour, site_str);
+    int array_size = cJSON_GetArraySize(facility_obj);
+    for (int i = 0; i < array_size; ++i) {
+        cJSON* element = cJSON_GetArrayItem(facility_obj, i);
+        if (cJSON_IsNumber(element) && cJSON_GetNumberValue(element) == 0) {
+            printf("%d ", i + 1); // 输出可用的场地编号
         }
     }
-    else {
-        printf("未找到场地类型 %s\n", facility_name);
+    printf("\n");
+    printf("从 %d 时到 %d 时的占用 %s:", start_hour, end_hour, site_str);
+    for (int i = 0; i < array_size; ++i) {
+        cJSON* element = cJSON_GetArrayItem(facility_obj, i);
+        if (cJSON_GetNumberValue(element) == 1) {
+            printf("%d ", i + 1); // 输出可用的场地编号
+        }
     }
+    printf("\n");
+    printf("从 %d 时到 %d 时的故障 %s:", start_hour, end_hour, site_str);
+    for (int i = 0; i < array_size; ++i) {
+        cJSON* element = cJSON_GetArrayItem(facility_obj, i);
+        if (cJSON_GetNumberValue(element) == 2) {
+            printf("%d ", i + 1); // 输出可用的场地编号
+        }
+    }
+    printf("\n");
 }
 
-// 更改场地状态
-void change_status(cJSON* root, const char* facility_name, int court_id, int new_status) {
-    cJSON* facility_array = cJSON_GetObjectItem(root, facility_name);
-    if (facility_array) {
-        int count = cJSON_GetArraySize(facility_array);
-        for (int i = 0; i < count; i++) {
-            cJSON* court = cJSON_GetArrayItem(facility_array, i);
-            int id = cJSON_GetObjectItem(court, "facility_id")->valueint;
-            if (id == court_id) {
-                cJSON* status_item = cJSON_GetObjectItem(court, "status");
-                status_item->valueint = new_status;
-                printf("%s %d 的状态已更改为 %s\n", facility_name, court_id, status_to_string(new_status));
-                return;
-            }
-        }
-        printf("未找到 %s 编号为 %d 的场地\n", facility_name, court_id);
-    }
-    else {
-        printf("未找到场地类型 %s\n", facility_name);
+void print_schedule(cJSON* site_json, int year, int month, int day, int start_hour, int end_hour) {
+    char date_str[11];
+    sprintf(date_str, "%d-%02d-%02d", year, month, day);
+    printf("Daily schedule for %s from %d:00 to %d:00:\n", date_str, start_hour, end_hour);
+    for (int site_id = 0; site_id < 4; ++site_id) {
+        print_facilities(site_json, year, month, day, site_id, start_hour, end_hour);
     }
 }
 
 void site_info()
 {
-    char* json_string = read_file("site_info.json");
-    if (json_string == NULL) {
-        return 1;
-    }
-
-    // 解析JSON字符串
-    cJSON* root = cJSON_Parse(json_string);
-    if (root == NULL) {
-        printf("JSON解析失败\n");
-        free(json_string);
-        return 1;
-    }
-
-    // 显示菜单和用户交互
+    printf("1.信息查询\n2.场地维护\n3.返回上一级\n4.退出系统\n");
     int choice;
-    int court_id, new_status;
-    const char* facility_names[] = { "badminton", "tennis", "basketball", "pingpang" };
-    //const char* facility_names[] = { "羽毛球场", "网球场", "篮球场", "乒乓球场" };
-    int facility_count = sizeof(facility_names) / sizeof(facility_names[0]);
-
-    while (1) {
-        printf("\n请选择场地类型:\n");
-        for (int i = 0; i < facility_count; i++) {
-            printf("%d. %s\n", i + 1, facility_names[i]);
+    int site_id;
+    int facility_id;
+    int start_hour, end_hour;
+    int year, month, day;
+    scanf("%d", &choice);
+    system("cls");
+    if (choice == 2)
+    {
+        report_error();
+    }
+    else if (choice == 1)
+    {
+        printf("输入日期 (YYYY-MM-DD): ");
+        scanf("%d-%d-%d", &year, &month, &day);
+        printf("输入开始时间 (9-20): ");
+        scanf("%d", &start_hour);
+        while (start_hour < 9 || start_hour > 20) {
+            printf("Invalid start hour. Please enter again (9-20): ");
+            scanf("%d", &start_hour);
         }
-        printf("%d. 返回上一级菜单\n", facility_count + 1);
-        printf("选择一个选项: ");
-        scanf("%d", &choice);
-        system("cls");
 
-        if (choice >= 1 && choice <= facility_count) {
-            const char* facility_name = facility_names[choice - 1];
-            display_facilities(root, facility_name);
-
-            while (1) {
-                printf("\n1. 更改场地状态\n");
-                printf("2. 返回上一级菜单\n");
-                printf("选择一个选项: ");
-                scanf("%d", &choice);
-                system("cls");
-
-                if (choice == 1) {
-                    printf("输入场地编号: ");
-                    scanf("%d", &court_id);
-                    printf("输入新状态 (0: 空闲, 1: 占用, 2: 故障): ");
-                    scanf("%d", &new_status);
-                    change_status(root, facility_name, court_id, new_status);
-                    display_facilities(root, facility_name);
-                }
-                else if (choice == 2) {
-                    break;
-                }
-                else {
-                    printf("无效选择\n");
-                }
-            }
-
+        printf("输入时间 (10-21): ");
+        scanf("%d", &end_hour);
+        while (end_hour < 10 || end_hour > 21) {
+            printf("Invalid end hour. Please enter again (10-21): ");
+            scanf("%d", &end_hour);
         }
-        else if (choice == facility_count + 1) {
-            // 更新后的JSON字符串
-            char* updated_json_string = cJSON_Print(root);
-            // 将更新后的JSON字符串写入文件
-            write_file("sports_facility_status.json", updated_json_string);
-            // 释放内存
-            free(updated_json_string);
-            cJSON_Delete(root);
-            free(json_string);
-            break;
+        char* site_data = read_file("site_info.json");
+        if (!site_data) return 1;
+
+        cJSON* site_json = cJSON_Parse(site_data);
+        free(site_data);
+        print_schedule(site_json, year, month, day, start_hour, end_hour);
+        printf("1.返回上一级\n2.退出系统\n");
+        int n;
+        scanf("%d", &n);
+        if (n == 1) {
+            system("cls");
+            admin_interface();
         }
         else {
-            printf("无效选择\n");
+            return 0;
         }
     }
-    admin_interface();
+    else if (choice == 3)
+    {
+        admin_interface();
+    }
+    else {
+        return 0;
+    }
+    return 0;
 }
