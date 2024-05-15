@@ -36,3 +36,4 @@ typedef struct student STU;
 typedef struct admin ADMIN;
 
 extern STU student_login;
+extern double fee_rates[];

@@ -17,7 +17,7 @@ void student_site_info() {
     printf("输入日期 (YYYY MM DD): ");
     scanf("%d %d %d", &year, &month, &day);
     print_daily_schedule(site_json, year, month, day);
-    printf("1.返回上一级\n2.退出系统");
+    printf("1.返回上一级\n2.退出系统\n");
     scanf("%d", &n);
     if (n == 1) {
         system("cls");

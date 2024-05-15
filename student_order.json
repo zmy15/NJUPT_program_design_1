@@ -1,50 +1,21 @@
 {
 	"111":	[{
-			"ID":	"111",
-			"site_id":	2,
-			"facility_id":	1,
-			"year":	2024,
-			"month":	5,
-			"day":	21,
-			"start_hour":	2,
-			"end_hour":	3,
-			"fee":	30
-		}, {
-			"ID":	"111",
-			"site_id":	0,
-			"facility_id":	1,
+			"site_id":	3,
+			"facility_id":	10,
 			"year":	2024,
 			"month":	5,
 			"day":	17,
-			"start_hour":	9,
-			"end_hour":	10,
-			"fee":	50
+			"start_hour":	11,
+			"end_hour":	13,
+			"fee":	40
 		}, {
-			"site_id":	2,
-			"facility_id":	2,
+			"site_id":	1,
+			"facility_id":	1,
 			"year":	2024,
 			"month":	5,
 			"day":	18,
 			"start_hour":	14,
-			"end_hour":	16,
-			"fee":	60
-		}, {
-			"site_id":	2,
-			"facility_id":	6,
-			"year":	2024,
-			"month":	5,
-			"day":	20,
-			"start_hour":	9,
-			"end_hour":	21,
-			"fee":	360
-		}, {
-			"site_id":	3,
-			"facility_id":	1,
-			"year":	2024,
-			"month":	5,
-			"day":	16,
-			"start_hour":	10,
-			"end_hour":	12,
-			"fee":	40
+			"end_hour":	18,
+			"fee":	160
 		}]
 }

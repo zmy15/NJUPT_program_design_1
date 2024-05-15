@@ -7,7 +7,7 @@
 #include "file.h"
 #include"student.h"
 
-const double fee_rates[] = { 50.0, 40.0, 30.0, 20.0 }; // 各种场地的收费标准
+double fee_rates[] = { 50.0, 40.0, 30.0, 20.0 }; // 各种场地的收费标准
 void update_site_status(cJSON* site_json, int site_id, int facility_id, int status) {
     const char* site_type;
     switch (site_id) {
@@ -304,6 +304,96 @@ void student_order() {
     int start_hour, end_hour;
     int year, month, day;
 
+    time_t current_time = time(NULL);
+    struct tm* current_tm = localtime(&current_time);
+    int current_year = current_tm->tm_year + 1900;
+    int current_month = current_tm->tm_mon + 1;
+    int current_day = current_tm->tm_mday;
+    int current_hour = current_tm->tm_hour;
+
+    // 读取预约记录文件
+    char* order_data = read_file("student_order.json");
+    cJSON* order_json = cJSON_Parse(order_data);
+    free(order_data);
+
+    if (order_json) {
+        cJSON* student_id_item;
+        cJSON_ArrayForEach(student_id_item, order_json) {
+            const char* student_id = student_id_item->string;
+            cJSON* student_order = cJSON_GetObjectItem(order_json, student_id);
+            if (student_order) {
+                int array_size = cJSON_GetArraySize(student_order);
+                for (int i = 0; i < array_size; ++i) {
+                    cJSON* reservation_json = cJSON_GetArrayItem(student_order, i);
+                    int reservation_year = cJSON_GetObjectItem(reservation_json, "year")->valueint;
+                    int reservation_month = cJSON_GetObjectItem(reservation_json, "month")->valueint;
+                    int reservation_day = cJSON_GetObjectItem(reservation_json, "day")->valueint;
+                    int reservation_end_hour = cJSON_GetObjectItem(reservation_json, "end_hour")->valueint;
+
+                    // 如果预约日期在当前日期之前或者是当前日期，但结束时间已过，则清除该预约
+                    if ((reservation_year < current_year) ||
+                        (reservation_year == current_year && reservation_month < current_month) ||
+                        (reservation_year == current_year && reservation_month == current_month && reservation_day <= current_day && reservation_end_hour <= current_hour)) {
+                        int site_id = cJSON_GetObjectItem(reservation_json, "site_id")->valueint;
+                        int facility_id = cJSON_GetObjectItem(reservation_json, "facility_id")->valueint;
+                        cJSON_DeleteItemFromArray(student_order, i); // 从预约记录中移除该预约
+
+                        // 读取 student_information.json 文件
+                        char* student_data = read_file("student_information.json");
+                        if (!student_data) return;
+                        cJSON* student_json = cJSON_Parse(student_data);
+
+                        // 更新 student_information.json 中的预约信息
+                        cJSON* student_info = cJSON_GetObjectItem(student_json, student_login.ID);
+                        if (student_info) {
+                            switch (site_id) {
+                            case 0:
+                                cJSON_ReplaceItemInObject(student_info, "badminton", cJSON_CreateNumber(0));
+                                break;
+                            case 1:
+                                cJSON_ReplaceItemInObject(student_info, "tennis", cJSON_CreateNumber(0));
+                                break;
+                            case 2:
+                                cJSON_ReplaceItemInObject(student_info, "basketball", cJSON_CreateNumber(0));
+                                break;
+                            case 3:
+                                cJSON_ReplaceItemInObject(student_info, "pingpang", cJSON_CreateNumber(0));
+                                break;
+                            default:
+                                break;
+                            }
+                        }
+
+                        // 将更新后的 student_information.json 写入文件
+                        char* student_data_updated = cJSON_Print(student_json);
+                        write_file("student_information.json", student_data_updated);
+                        free(student_data_updated);
+
+                        // 释放 cJSON 对象
+                        cJSON_Delete(student_json);
+                        free(student_data);
+
+                        // 读取 site_info.json 文件
+                        char* site_data = read_file("site_info.json");
+                        if (!site_data) return;
+                        cJSON* site_json = cJSON_Parse(site_data);
+
+                        // 更新 site_info.json 中的预约信息
+                        update_site_status(site_json, site_id, facility_id, 0); // 将对应场地的状态设置为未预约
+
+                        // 将更新后的 site_info.json 写入文件
+                        char* site_data_updated = cJSON_Print(site_json);
+                        write_file("site_info.json", site_data_updated);
+                        free(site_data_updated);
+
+                        // 释放 cJSON 对象
+                        cJSON_Delete(site_json);
+                        free(site_data);
+                    }
+                }
+            }
+        }
+    }
     while (1) {
         printf("\n1. 预约场地\n2. 取消预约\n3. 查看可用场地\n4. 返回上一级\n5. 退出系统\n");
         printf("请输入序号: ");

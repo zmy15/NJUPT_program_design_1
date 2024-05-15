@@ -22,8 +22,8 @@ void display_facilities(cJSON* root, const char* facility_name) {
         int count = cJSON_GetArraySize(facility_array);
         for (int i = 0; i < count; i++) {
             cJSON* court = cJSON_GetArrayItem(facility_array, i);
-            int id = cJSON_GetObjectItem(court, "场地编号")->valueint;
-            int status = cJSON_GetObjectItem(court, "状态")->valueint;
+            int id = cJSON_GetObjectItem(court, "facility_id")->valueint;
+            int status = cJSON_GetObjectItem(court, "status")->valueint;
             printf("  场地编号: %d, 状态: %s\n", id, status_to_string(status));
         }
     }
@@ -39,9 +39,9 @@ void change_status(cJSON* root, const char* facility_name, int court_id, int new
         int count = cJSON_GetArraySize(facility_array);
         for (int i = 0; i < count; i++) {
             cJSON* court = cJSON_GetArrayItem(facility_array, i);
-            int id = cJSON_GetObjectItem(court, "场地编号")->valueint;
+            int id = cJSON_GetObjectItem(court, "facility_id")->valueint;
             if (id == court_id) {
-                cJSON* status_item = cJSON_GetObjectItem(court, "状态");
+                cJSON* status_item = cJSON_GetObjectItem(court, "status");
                 status_item->valueint = new_status;
                 printf("%s %d 的状态已更改为 %s\n", facility_name, court_id, status_to_string(new_status));
                 return;
@@ -72,7 +72,8 @@ void site_info()
     // 显示菜单和用户交互
     int choice;
     int court_id, new_status;
-    const char* facility_names[] = { "羽毛球场", "网球场", "篮球场", "乒乓球场" };
+    const char* facility_names[] = { "badminton", "tennis", "basketball", "pingpang" };
+    //const char* facility_names[] = { "羽毛球场", "网球场", "篮球场", "乒乓球场" };
     int facility_count = sizeof(facility_names) / sizeof(facility_names[0]);
 
     while (1) {

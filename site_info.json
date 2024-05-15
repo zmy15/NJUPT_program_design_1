@@ -4,70 +4,70 @@
 			"status":	0
 		}, {
 			"facility_id":	2,
-			"status":	1
+			"status":	2
 		}, {
 			"facility_id":	3,
 			"status":	0
 		}, {
 			"facility_id":	4,
-			"status":	2
+			"status":	0
 		}, {
 			"facility_id":	5,
-			"status":	1
+			"status":	0
 		}, {
 			"facility_id":	6,
-			"status":	1
+			"status":	0
 		}],
 	"tennis":	[{
 			"facility_id":	1,
-			"status":	0
+			"status":	1
 		}, {
 			"facility_id":	2,
-			"status":	1
+			"status":	0
 		}, {
 			"facility_id":	3,
-			"status":	1
+			"status":	0
 		}],
 	"basketball":	[{
 			"facility_id":	1,
-			"status":	1
+			"status":	0
 		}, {
 			"facility_id":	2,
-			"status":	1
+			"status":	0
 		}, {
 			"facility_id":	3,
-			"status":	2
+			"status":	0
 		}, {
 			"facility_id":	4,
-			"status":	1
+			"status":	0
 		}, {
 			"facility_id":	5,
 			"status":	0
 		}, {
 			"facility_id":	6,
-			"status":	1
+			"status":	0
 		}, {
 			"facility_id":	7,
-			"status":	1
+			"status":	0
 		}, {
 			"facility_id":	8,
-			"status":	2
+			"status":	0
 		}],
 	"pingpang":	[{
 			"facility_id":	1,
-			"status":	1
+			"status":	2
 		}, {
 			"facility_id":	2,
 			"status":	0
 		}, {
 			"facility_id":	3,
-			"status":	1
+			"status":	0
 		}, {
 			"facility_id":	4,
-			"status":	2
+			"status":	0
 		}, {
 			"facility_id":	5,
-			"status":	1
+			"status":	0
 		}, {
 			"facility_id":	6,
 			"status":	0
@@ -76,12 +76,12 @@
 			"status":	0
 		}, {
 			"facility_id":	8,
-			"status":	1
+			"status":	0
 		}, {
 			"facility_id":	9,
-			"status":	2
+			"status":	0
 		}, {
 			"facility_id":	10,
-			"status":	0
+			"status":	1
 		}]
 }
