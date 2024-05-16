@@ -85,8 +85,8 @@ void count_daily_usage(int year, int month, int day) {
 void site_statistics_info()
 {
     int year, month, day;
-    printf("输入统计日期 (YYYY MM DD): ");
-    scanf("%d %d %d", &year, &month, &day);
+    printf("输入统计日期 (YYYY-MM-DD): ");
+    scanf("%d-%d-%d", &year, &month, &day);
     count_daily_usage(year, month, day);
     printf("1.返回上一级\n2.退出系统\n");
     int n;

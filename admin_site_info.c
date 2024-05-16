@@ -59,7 +59,7 @@ void print_facilities(cJSON* site_json, int year, int month, int day, int site_i
     for (int i = 0; i < array_size; ++i) {
         cJSON* element = cJSON_GetArrayItem(facility_obj, i);
         if (cJSON_GetNumberValue(element) == 1) {
-            printf("%d ", i + 1); // 输出可用的场地编号
+            printf("%d ", i + 1); // 输出占用的场地编号
         }
     }
     printf("\n");
@@ -67,7 +67,7 @@ void print_facilities(cJSON* site_json, int year, int month, int day, int site_i
     for (int i = 0; i < array_size; ++i) {
         cJSON* element = cJSON_GetArrayItem(facility_obj, i);
         if (cJSON_GetNumberValue(element) == 2) {
-            printf("%d ", i + 1); // 输出可用的场地编号
+            printf("%d ", i + 1); // 输出故障的场地编号
         }
     }
     printf("\n");
@@ -79,6 +79,54 @@ void print_schedule(cJSON* site_json, int year, int month, int day, int start_ho
     printf("Daily schedule for %s from %d:00 to %d:00:\n", date_str, start_hour, end_hour);
     for (int site_id = 0; site_id < 4; ++site_id) {
         print_facilities(site_json, year, month, day, site_id, start_hour, end_hour);
+    }
+}
+
+void remove_error_record(int site_id, int facility_id) {
+    FILE* error_file = fopen("error.txt", "r");
+    if (!error_file) {
+        printf("Error: Unable to open error log file.\n");
+        return;
+    }
+
+    FILE* temp_file = fopen("temp_error.txt", "w");
+    if (!temp_file) {
+        printf("Error: Unable to open temporary log file.\n");
+        fclose(error_file);
+        return;
+    }
+
+    char line[256];
+    while (fgets(line, sizeof(line), error_file)) {
+        int current_site_id, current_facility_id;
+        if (sscanf(line, "Site ID: %d, Facility ID: %d", &current_site_id, &current_facility_id) == 2) {
+            if (current_site_id == site_id && current_facility_id == facility_id) {
+                continue; // Skip the line corresponding to the fixed facility
+            }
+        }
+        fputs(line, temp_file);
+    }
+
+    fclose(error_file);
+    fclose(temp_file);
+
+    remove("error.txt");
+    rename("temp_error.txt", "error.txt");
+}
+
+void mark_facilities(cJSON* site_json, int site_id, int facility_id,int statue) {
+    cJSON* date_key;
+    cJSON_ArrayForEach(date_key, site_json) {
+        cJSON* time_key;
+        cJSON_ArrayForEach(time_key, date_key) {
+            cJSON* facility = cJSON_GetObjectItem(time_key, "badminton"); // 获取指定场地类型的数组
+            if (!facility) {
+                printf("Error: Unable to retrieve information.\n");
+                continue;
+            }
+
+            cJSON_SetNumberValue(cJSON_GetArrayItem(facility, facility_id), statue); // 设置场地状态
+        }
     }
 }
 
@@ -94,7 +142,53 @@ void site_info()
     system("cls");
     if (choice == 2)
     {
-        report_error();
+        int site_id;
+        int facility_id;
+        int n,statue;
+
+        printf("选择场地 (0: 羽毛球场, 1: 网球场, 2: 篮球场, 3: 乒乓球场):  ");
+        scanf("%d", &site_id);
+
+        printf("输入场地编号: ");
+        scanf("%d", &facility_id);
+
+        printf("输入场地状态: ");
+        scanf("%d", &statue);
+        char* site_data = read_file("site_info.json");
+        if (!site_data) return 1;
+
+        cJSON* site_json = cJSON_Parse(site_data);
+        free(site_data);
+
+        // 更新 site_info.json 中的场地状态
+        mark_facilities(site_json, site_id, facility_id,statue);
+        if (statue == 0)
+        {
+            remove_error_record(site_id, facility_id);
+        }
+        else if (statue == 2)
+        {
+            record_error(site_id, facility_id);
+        }
+        // 将更新后的 site_info.json 写入文件
+        char* site_data_updated = cJSON_Print(site_json);
+        write_file("site_info.json", site_data_updated);
+        free(site_data_updated);
+
+        // 释放 cJSON 对象
+        cJSON_Delete(site_json);
+
+        printf("已完成场地更改！\n");
+        printf("1.返回上一级\n2.退出系统\n");
+        scanf("%d", &n);
+        if (n == 1) {
+            system("cls");
+            student_interface();
+        }
+        else {
+            return 0;
+        }
+        return 0;
     }
     else if (choice == 1)
     {

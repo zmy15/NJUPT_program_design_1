@@ -1,12 +1,1 @@
-{
-	"111":	[{
-			"site_id":	0,
-			"facility_id":	1,
-			"year":	2024,
-			"month":	5,
-			"day":	16,
-			"start_hour":	9,
-			"end_hour":	10,
-			"fee":	5
-		}]
-}
+{}
