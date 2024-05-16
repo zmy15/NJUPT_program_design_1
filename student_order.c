@@ -424,8 +424,7 @@ void interactive_mode(cJSON* site_info, char* student_order) {
         case 1: {
             // 输入预约信息
             Reservation new_reservation;
-            printf("Enter student ID: ");
-            scanf("%s", new_reservation.ID);
+            strcpy(new_reservation.ID, student_login.ID);
             printf("输入预约日期 (YYYY-MM-DD): ");
             scanf("%d-%d-%d", &new_reservation.year, &new_reservation.month, &new_reservation.day);
             printf("输入预约时间段 (HH-HH): ");

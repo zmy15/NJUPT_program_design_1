@@ -183,7 +183,7 @@ void site_info()
         scanf("%d", &n);
         if (n == 1) {
             system("cls");
-            student_interface();
+            admin_interface();
         }
         else {
             return 0;
